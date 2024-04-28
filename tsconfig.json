@@ -1,0 +1,68 @@
+{
+  "compilerOptions": {
+    "diagnostics": false,
+    "extendedDiagnostics": false,
+    "types": [
+      "node",
+      "jest"
+    ],
+    "lib": [
+      "es6",
+      "dom",
+      "es2020"
+    ],
+    "baseUrl": ".",
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "alwaysStrict": true,
+    "moduleResolution": "node",
+    "module": "esnext",
+    "jsx": "react",
+    "sourceMap": true,
+    "allowJs": false,
+    "target": "es6",
+    "declaration": false,
+    "disableSizeLimit": false,
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": true,
+    "preserveConstEnums": true,
+    "newLine": "lf",
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noResolve": false,
+    "removeComments": false,
+    "forceConsistentCasingInFileNames": true
+  },
+  "paths": {
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "ts_types/**/*.ts",
+  ],
+  "exclude": [
+    "build/",
+    "build_cache/",
+    "build_ts/",
+    "node_modules",
+    "node_scripts",
+    "doc",
+    "tasks",
+    "test",
+    "spec",
+    "build",
+    "build_cache",
+    "build_ts",
+    "**/*.spec.ts",
+    "**/*_spec.ts",
+    "../**/*_spec.ts",
+    "../**/*.spec.ts",
+    "../spec/**"
+  ]
+}

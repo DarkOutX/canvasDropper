@@ -1,0 +1,8 @@
+/node_modules
+/.idea
+/build_cache
+/build
+/maps
+/dist
+/_additional
+/coverage
