@@ -3,10 +3,22 @@
   position: relative;
   //width: 1500px;
   //height: 1000px;
+  cursor: none;
 }
 
 .dropperColor {
   display: block;
   width: 100px;
   height: 100px;
+}
+
+.dropperWrapper {
+  canvas {
+    position: absolute;
+    pointer-events: none;
+
+    border-radius: 100%;
+
+    border: 2px solid gray;
+  }
 }

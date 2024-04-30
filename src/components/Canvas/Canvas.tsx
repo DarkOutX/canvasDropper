@@ -2,6 +2,7 @@
 import * as React from 'react';
 import "./styles.scss";
 import CanvasEngine from "./CanvasEngine";
+import Dropper from "./Dropper";
 
 interface IProps {
     img?: HTMLImageElement;
@@ -12,7 +13,9 @@ export default function Canvas(props: IProps) {
         img,
     } = props;
     const cnv = React.useRef<HTMLCanvasElement>(null);
+    const dropperCnv = React.useRef<HTMLCanvasElement>(null);
     const [ color, setColor ] = React.useState<string | void>(void 0);
+    const engine = new CanvasEngine();
 
     React.useEffect(() => {
         const canvasDOM = cnv.current;
@@ -21,8 +24,8 @@ export default function Canvas(props: IProps) {
             return;
         }
 
-        const engine = new CanvasEngine(canvasDOM);
-
+        engine.init(canvasDOM);
+        // engine.initDropper(canvasDropperDOM);
         engine.drawImage(img);
 
         engine.setOnMouseMove((event) => {
@@ -40,6 +43,7 @@ export default function Canvas(props: IProps) {
             ref={cnv}
         />
 
+        <Dropper setDropper={engine!.initDropper.bind(engine!)} />
         <span
             className={'dropperColor'}
             style={{
