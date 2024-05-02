@@ -8,12 +8,15 @@ interface IProps {
     img?: HTMLImageElement;
 }
 
+const engine = new CanvasEngine();
+
 export default function Canvas(props: IProps) {
     const {
         img,
     } = props;
+    const [ dropperColor, setDropperColor] = React.useState<void | string>(void 0);
+    const [ isDropperOn, setIsDropperOn] = React.useState<boolean>(false);
     const cnv = React.useRef<HTMLCanvasElement>(null);
-    const engine = new CanvasEngine();
 
     React.useEffect(() => {
         const canvasDOM = cnv.current;
@@ -24,18 +27,33 @@ export default function Canvas(props: IProps) {
 
         engine.init(canvasDOM);
         engine.drawImage(img);
+        engine.setOnColorSelected((ev) => {
+            setDropperColor(() => ev.color);
+        });
 
         return () => {
             engine.destructor();
         }
     }, []);
 
-    return <div>
+    return <div className={`canvasWrapper ${ isDropperOn ? 'dropperOn' : '' }`}>
+        <div className={'dropperTools'}>
+            <span
+                className={'dropperTools__btn'}
+                onClick={() => {
+                    engine.toggleDropper();
+
+                    setIsDropperOn(!isDropperOn);
+                }}
+            ></span>
+            <span className={'dropperTools__hexColor'}>{dropperColor}</span>
+        </div>
+
         <canvas
             className={'canvas'}
             ref={cnv}
         />
 
-        <Dropper setDropper={engine.initDropper.bind(engine!)} />
+        <Dropper setDropper={engine.initDropper.bind(engine)} />
     </div>
 }

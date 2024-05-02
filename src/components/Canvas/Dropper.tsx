@@ -3,29 +3,26 @@ import * as React from 'react';
 import CanvasEngine from "./CanvasEngine";
 
 interface IProps {
-    setDropper: (dropperCanbas: HTMLCanvasElement) => void;
+    setDropper: (dropperWrapper: HTMLDivElement) => void;
 }
 
 export default function Dropper(props: IProps) {
     const {
         setDropper,
     } = props;
-    const dropperCnv = React.useRef<HTMLCanvasElement>(null);
+    const wrapperCnv = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
-        const canvasDropperDOM = dropperCnv.current;
+        const dropperWrapperDOM = wrapperCnv.current;
 
-        if (!canvasDropperDOM) {
+        if (!dropperWrapperDOM) {
             return;
         }
 
-        setDropper(canvasDropperDOM);
+        setDropper(dropperWrapperDOM);
     }, []);
 
-    return <div className={'dropperWrapper'}>
-        <canvas
-            ref={dropperCnv}
-        />
+    return <div className={'dropperWrapper'} ref={wrapperCnv}>
     </div>
 
 }

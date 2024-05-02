@@ -1,16 +1,53 @@
 
-.canvas {
-  position: relative;
-  cursor: none;
+.canvasWrapper {
+  .canvas {
+    position: relative;
+  }
+
+  &.dropperOn .canvas {
+    cursor: none;
+  }
 }
 
 .dropperWrapper {
-  canvas {
-    position: absolute;
-    pointer-events: none;
+  position: absolute;
+  pointer-events: none;
+  border-radius: 100%;
+  border: 2px solid gray;
+  overflow: hidden;
+}
+
+.dropperTools {
+  display: flex;
+  position: relative;
+  align-items: center;
+  width: 100%;
+
+  padding: 20px;
+
+  &__btn {
+    display: flex;
+    width: 50px;
+    height: 50px;
 
     border-radius: 100%;
+    background-color: lightblue;
+    background-image: url("../../assets/imgs/IconColorPicker.svg");
+    background-size: 70% 70%;
+    background-position: center;
+    background-repeat: no-repeat;
 
-    border: 2px solid gray;
+    transition: .3s;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.15);
+    }
+  }
+
+  &__hexColor {
+    padding-left: 10%;
+    font-size: 20pt;
+    font-weight: 900;
   }
 }

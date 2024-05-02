@@ -1,5 +1,7 @@
 
 import * as React from 'react';
+import './assets/styles/global.scss';
+
 import Canvas from "./components/Canvas/Canvas";
 import ImgInput from "./components/ImgInput/ImgInput";
 
