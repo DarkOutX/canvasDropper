@@ -13,6 +13,10 @@ export default class CanvasEngine {
 
     private _dropperZoomedPixelsAmount = 7;
     private _dropperPixelMultiplier = 45;
+    private _textYOffset = 35;
+    private _textSize = 25;
+    private _textPadding = 3;
+
     private get _realDropperSize() {
         return this._dropperZoomedPixelsAmount * this._dropperPixelMultiplier;
     }
@@ -41,14 +45,17 @@ export default class CanvasEngine {
             _ctx,
         } = this;
         const {
-            width,
-            height,
+            width: imgWidth,
+            height: imgHeight,
         } = img;
 
-        cnv.width = width;
-        cnv.height = height;
+        const viewWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+        const viewHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
 
-        _ctx.drawImage(img, 0, 0, width, height);
+        cnv.width = Math.min(viewWidth, imgWidth);
+        cnv.height = Math.min(viewHeight, imgHeight);
+
+        _ctx.drawImage(img, 0, 0, cnv.width, cnv.height);
     }
 
     initDropper(canvas: HTMLCanvasElement) {
@@ -85,6 +92,18 @@ export default class CanvasEngine {
         cnv.addEventListener('mousemove', this._onMouseMove);
     }
 
+    private _removeListeners() {
+        const {
+            cnv,
+        } = this;
+
+        cnv.removeEventListener('mousemove', this._onMouseMove);
+    }
+
+    destructor() {
+        this._removeListeners();
+    }
+
     private _onMouseMove = (ev: MouseEvent) => {
         const {
             _ctx,
@@ -115,15 +134,34 @@ export default class CanvasEngine {
                 _dropperZoomedPixelsAmount,
                 _dropperPixelMultiplier,
                 _realDropperSize,
+
+                _textYOffset,
+                _textPadding,
+                _textSize,
             } = this;
 
-            _dropperCnv.style.top = `${y - _realDropperSize / 2}px`;
-            _dropperCnv.style.left = `${x - _realDropperSize / 2}px`;
+            const dropperSizeCenter = _realDropperSize / 2;
+
+            _dropperCnv.style.top = `${y - dropperSizeCenter}px`;
+            _dropperCnv.style.left = `${x - dropperSizeCenter}px`;
 
             const getImageDataOffset = Math.ceil(_dropperZoomedPixelsAmount / 2);
-            const pixelColors = getPixels(_ctx, -offsetX + x - getImageDataOffset, -offsetY + y - getImageDataOffset, _dropperZoomedPixelsAmount);
+            const takeXStart = -offsetX + x - getImageDataOffset;
+            const takeYStart = -offsetY + y - getImageDataOffset;
+            const pixelColors = getPixels(_ctx, takeXStart, takeYStart, _dropperZoomedPixelsAmount);
 
             drawPixels(_dropperCtx, pixelColors, _dropperZoomedPixelsAmount, _dropperPixelMultiplier);
+
+            { // Writing HEX-color
+                const textString = `${rgba2hex(color)}`;
+                const textWidthHalf = _dropperCtx.measureText(textString).width / 2;
+
+                _dropperCtx.fillStyle = `white`;
+                _dropperCtx.fillRect(dropperSizeCenter - textWidthHalf - _textPadding, dropperSizeCenter - _textYOffset - _textSize, (textWidthHalf + _textPadding) * 2, _textSize + _textPadding * 2);
+                _dropperCtx.fillStyle = `black`;
+                _dropperCtx.font = `${_textSize}px serif`;
+                _dropperCtx.fillText(textString, (_dropperCnv.width / 2) - textWidthHalf, dropperSizeCenter - _textYOffset);
+            }
         }
     }
 
@@ -155,4 +193,24 @@ function drawPixels(ctx: CanvasRenderingContext2D, colors: ColorRGBA[], size: nu
             ctx.globalAlpha = 255;
         }
     }
+
+    { // Outlining selected pixel
+        const centerPixelNum = Math.floor(size / 2);
+
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(centerPixelNum * pixelSize, centerPixelNum * pixelSize, pixelSize, pixelSize);
+    }
+}
+
+function colorPartToHex(colorValue: number) {
+    const hex = colorValue.toString(16);
+
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgba2hex(rgba: ColorRGBA) {
+    const [ r, g, b ] = rgba;
+
+    return "#" + colorPartToHex(r) + colorPartToHex(g) + colorPartToHex(b);
 }
