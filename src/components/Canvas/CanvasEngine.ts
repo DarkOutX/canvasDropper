@@ -11,10 +11,25 @@ export default class CanvasEngine {
     private _ctx!: CanvasRenderingContext2D;
     private _externalOnMouseMove?: onMouseMove_cb;
 
+    /**
+     * Amount of zoomed pixels in dropper
+     */
     private _dropperZoomedPixelsAmount = 7;
+    /**
+     * Scale factor of zoomed pixels in dropper
+     */
     private _dropperPixelMultiplier = 45;
+    /**
+     * Value to move HEX-color text above center
+     */
     private _textYOffset = 35;
+    /**
+     * Size of HEX-color text
+     */
     private _textSize = 25;
+    /**
+     * Padding for background of HEX-color text
+     */
     private _textPadding = 3;
 
     private get _realDropperSize() {
@@ -70,6 +85,11 @@ export default class CanvasEngine {
         this._dropperCtx = this._getContext(canvas);
     }
 
+    /**
+     * Method to add the possibility of getting color in some external methods.
+     * Was using it to output color in external DOM-container during debug,
+     *  but decided to save such functionality just as a preview
+     */
     setOnMouseMove(cb: onMouseMove_cb) {
         this._externalOnMouseMove = cb;
     }
@@ -148,6 +168,13 @@ export default class CanvasEngine {
             const getImageDataOffset = Math.ceil(_dropperZoomedPixelsAmount / 2);
             const takeXStart = -offsetX + x - getImageDataOffset;
             const takeYStart = -offsetY + y - getImageDataOffset;
+
+            /**
+             * I was looking for a way to transfer part of image with single use of getImageData() + putImageData(),
+             *  but there are problems with image scaling, I decided it would be unstable tactic.
+             * Moreover, getPixels + drawPixels is a functions with fixed amount of iterations independent of image size,
+             *  so I found it as enough good solution
+             */
             const pixelColors = getPixels(_ctx, takeXStart, takeYStart, _dropperZoomedPixelsAmount);
 
             drawPixels(_dropperCtx, pixelColors, _dropperZoomedPixelsAmount, _dropperPixelMultiplier);
@@ -203,7 +230,7 @@ function drawPixels(ctx: CanvasRenderingContext2D, colors: ColorRGBA[], size: nu
     }
 }
 
-function colorPartToHex(colorValue: number) {
+function _colorPartToHex(colorValue: number) {
     const hex = colorValue.toString(16);
 
     return hex.length == 1 ? "0" + hex : hex;
@@ -212,5 +239,5 @@ function colorPartToHex(colorValue: number) {
 function rgba2hex(rgba: ColorRGBA) {
     const [ r, g, b ] = rgba;
 
-    return "#" + colorPartToHex(r) + colorPartToHex(g) + colorPartToHex(b);
+    return "#" + _colorPartToHex(r) + _colorPartToHex(g) + _colorPartToHex(b);
 }
